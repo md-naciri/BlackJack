@@ -1,19 +1,31 @@
 package com.blackjack;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+import java.util.Arrays;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        System.out.printf("Hello and welcome!\n");
+        //Shuffle.sortedCards().forEach(e-> System.out.println(e[0] + " " + e[1]));
+        List<int[]> r = Shuffle.tirer_une_carte(Shuffle.sortedCards());
+        //r.forEach(e-> System.out.println(e[0] + " " + e[1]));
+        //for (int[] array : r) {
+        //    System.out.println(Arrays.toString(array));
+        //}
+        //List<int[]> r1 = Shuffle.extraire_ieme_carte(Shuffle.sortedCards(), 3);
 
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
 
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
+
+
+
+
+        List<int[]> cards = Shuffle.sortedCards();
+        List<int[]> shuffledCards = Shuffle.melanger_jeu_cartes(cards);
+        for (int[] array : shuffledCards) {
+            System.out.println(Arrays.toString(array));
         }
+
+
+
     }
 }
