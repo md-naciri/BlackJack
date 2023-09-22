@@ -1,5 +1,4 @@
 package com.blackjack;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,6 +24,7 @@ public class Shuffle {
         resultList.addAll(lst);
         return resultList;
     }
+
     public static List<int[]> tirer_une_carte(List<int[]> lst) {
         Random random = new Random();
         int randomIndex = random.nextInt(lst.size());
@@ -40,6 +40,21 @@ public class Shuffle {
             finalResult.addAll(melanger_jeu_cartes(result.subList(1, result.size())));
             return finalResult;
         }
+    }
+
+    public static List<List<int[]>> piocher_n_cartes(List<int[]> lst) {
+        List<List<int[]>> result = new ArrayList<>();
+
+        Random random = new Random();
+        int index = random.nextInt(9) + 21;
+
+        List<int[]> cartes_piochees = new ArrayList<>(lst.subList(0, index));
+        List<int[]> cartes_restantes = new ArrayList<>(lst.subList(index, lst.size()));
+
+        result.add(cartes_piochees);
+        result.add(cartes_restantes);
+
+        return result;
     }
 }
 
