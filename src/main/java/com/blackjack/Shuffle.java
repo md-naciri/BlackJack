@@ -56,5 +56,14 @@ public class Shuffle {
 
         return result;
     }
+
+    public static List<List<int[]>> defausser_cartes(List<int[]> cartes_piochees, List<int[]> cartes_restantes) {
+        List<int[]> combinedList = new ArrayList<>(cartes_piochees);
+        combinedList.addAll(cartes_restantes);
+
+        //return combinedList;
+        return piocher_n_cartes(melanger_jeu_cartes(combinedList));
+    }
 }
+
 

@@ -29,17 +29,31 @@ public class Main {
 
 
         List<List<int[]>> result = Shuffle.piocher_n_cartes(Shuffle.melanger_jeu_cartes(Shuffle.sortedCards()));
-
+        List<int[]> cartes_piochees = result.get(0);
+        List<int[]> cartes_restantes = result.get(1);
         System.out.println("Cartes piochées:");
-        for (int[] card : result.get(0)) {
+        for (int[] card : cartes_piochees) {
             System.out.println(Arrays.toString(card));
         }
-
         System.out.println("\nCartes restantes:");
-        for (int[] card : result.get(1)) {
+        for (int[] card : cartes_restantes) {
             System.out.println(Arrays.toString(card));
         }
 
+
+
+        List<List<int[]>> d = Shuffle.defausser_cartes(cartes_piochees ,cartes_restantes);
+        System.out.println("\nNew list:");
+        List<int[]> cartes_piochees2 = d.get(0);
+        List<int[]> cartes_restantes2 = d.get(1);
+        System.out.println("Cartes piochées:");
+        for (int[] card : cartes_piochees2) {
+            System.out.println(Arrays.toString(card));
+        }
+        System.out.println("\nCartes restantes:");
+        for (int[] card : cartes_restantes2) {
+            System.out.println(Arrays.toString(card));
+        }
 
 
     }
