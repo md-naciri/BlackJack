@@ -4,8 +4,33 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Main {
+    public static String symbolize(int value) {
+        if (value == 1) {
+            return "A";
+        } else if (value == 11) {
+            return "J";
+        } else if (value == 12) {
+            return "Q";
+        } else if (value == 13) {
+            return "K";
+        } else {
+            return String.valueOf(value);
+        }
+    }
     public static void main(String[] args) {
         System.out.printf("Hello and welcome!\n");
+        String[] suits = {"♦", "♥", "♠", "♣"};
+        for (int[] card : Shuffle.sortedCards()) {
+            int value = card[0];
+            int suitIndex = card[1] - 1; // Subtract 1 to map to the suits array
+            String suit = suits[suitIndex];
+            //System.out.print("[" + symbolize(value) + suit + "] ");
+            System.out.println("  _____");
+            System.out.println(" |" + symbolize(value) + "    |");
+            System.out.println(" |  " + suit + "  |");
+            System.out.println(" |    " + symbolize(value) + "|");
+            System.out.println("  ¯¯¯¯¯");
+        }
         //Shuffle.sortedCards().forEach(e-> System.out.println(e[0] + " " + e[1]));
         //List<int[]> r = Shuffle.tirer_une_carte(Shuffle.sortedCards());
         //r.forEach(e-> System.out.println(e[0] + " " + e[1]));
@@ -31,7 +56,7 @@ public class Main {
         List<List<int[]>> result = Shuffle.piocher_n_cartes(Shuffle.melanger_jeu_cartes(Shuffle.sortedCards()));
         List<int[]> cartes_piochees = result.get(0);
         List<int[]> cartes_restantes = result.get(1);
-        System.out.println("Cartes piochées:");
+        System.out.println("\nCartes piochées:");
         for (int[] card : cartes_piochees) {
             System.out.println(Arrays.toString(card));
         }
