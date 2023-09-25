@@ -92,7 +92,27 @@ public class Shuffle {
             finalResult.addAll(melanger_jeu_cartes(result.subList(1, result.size())));
             return finalResult;
         }
+    } */
+
+    public static int[][] melanger_jeu_cartes(int[][] cards) {
+        if (cards.length == 1) return new int[][] { cards[0] };
+
+        int[][][] drawnCard = tirer_une_carte(cards);
+        int[][] shuffledCards = melanger_jeu_cartes(drawnCard[1]);
+
+        return concatArrays(new int[][] { drawnCard[0][0] }, shuffledCards);
     }
+
+    public static int[][] concatArrays(int[][] a, int[][] b) {
+        int[][] result = new int[a.length + b.length][];
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
+    }
+
+
+
+    /*
 
     public static List<List<int[]>> piocher_n_cartes(List<int[]> lst) {
         List<List<int[]>> result = new ArrayList<>();

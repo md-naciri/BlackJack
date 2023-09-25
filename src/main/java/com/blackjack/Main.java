@@ -54,6 +54,15 @@ public class Main {
             System.out.println("[" + symbolize(card[0]) + suit + "] ");
         }
 
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        int[][] sh_cards = Shuffle.melanger_jeu_cartes(cards);
+        for (int i = 0; i < sh_cards.length; i++) {
+            int[] card = sh_cards[i];
+            int suitIndex = sh_cards[i][1] - 1;
+            String suit = suits[suitIndex];
+            System.out.println("[" + symbolize(card[0]) + suit + "] ");
+        }
+
 
 
 
