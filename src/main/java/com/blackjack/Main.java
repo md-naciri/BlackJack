@@ -20,7 +20,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.printf("Hello and welcome!\n");
         String[] suits = {"♦", "♥", "♠", "♣"};
-        for (int[] card : Shuffle.sortedCards()) {
+        /*for (int[] card : Shuffle.sortedCards()) {
             int value = card[0];
             int suitIndex = card[1] - 1; // Subtract 1 to map to the suits array
             String suit = suits[suitIndex];
@@ -30,7 +30,38 @@ public class Main {
             System.out.println(" |  " + suit + "  |");
             System.out.println(" |    " + symbolize(value) + "|");
             System.out.println("  ¯¯¯¯¯");
+        }*/
+
+
+        int[][] cards = Shuffle.sortedCards();
+
+        //int indexToExtract = 2;
+
+        //int[][][] finalResult = Shuffle.extraire_ieme_carte(cards, indexToExtract);
+
+        int[][][] finalResult = Shuffle.tirer_une_carte(cards);
+
+        int[] extractedElement = finalResult[0][0];
+        System.out.println("Extracted Element: Rank: " + extractedElement[0] + ", Suit: " + extractedElement[1]);
+
+        int[][] remainingCards = finalResult[1];
+        System.out.println("Remaining Cards:");
+
+        for (int i = 0; i < remainingCards.length; i++) {
+            int[] card = remainingCards[i];
+            int suitIndex = remainingCards[i][1] - 1;
+            String suit = suits[suitIndex];
+            System.out.println("[" + symbolize(card[0]) + suit + "] ");
         }
+
+
+
+
+
+
+
+
+
         //Shuffle.sortedCards().forEach(e-> System.out.println(e[0] + " " + e[1]));
         //List<int[]> r = Shuffle.tirer_une_carte(Shuffle.sortedCards());
         //r.forEach(e-> System.out.println(e[0] + " " + e[1]));
@@ -51,7 +82,7 @@ public class Main {
         }
 
 */
-
+/*
 
         List<List<int[]>> result = Shuffle.piocher_n_cartes(Shuffle.melanger_jeu_cartes(Shuffle.sortedCards()));
         List<int[]> cartes_piochees = result.get(0);
@@ -80,6 +111,9 @@ public class Main {
             System.out.println(Arrays.toString(card));
         }
 
+
+        Game start = new Game();
+        start.start();*/
 
     }
 }
