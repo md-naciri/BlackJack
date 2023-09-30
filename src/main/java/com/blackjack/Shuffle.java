@@ -1,22 +1,7 @@
 package com.blackjack;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class Shuffle {
-    /*public static List<int[]> sortedCards() {
-        int rank = 1;
-        int suit = 1;
-        List<int[]> cards = new ArrayList<>();
-        for(int s = suit; s <= 4; s++){
-            rank = (s == suit) ? rank : 1;
-            for(int r = rank; r <= 13; r++){
-                int[] rs = {r, s};
-                cards.add(rs);
-            }
-        }
-        return cards;
-    }*/
 
     public static int[][] sortedCards() {
         int rank = 1;
@@ -35,13 +20,6 @@ public class Shuffle {
         }
         return cards;
     }
-    /*public static List<int[]> extraire_ieme_carte(List<int[]> lst, int index) {
-        int[] element = lst.remove(index);
-        List<int[]> resultList = new ArrayList<>();
-        resultList.add(element);
-        resultList.addAll(lst);
-        return resultList;
-    }*/
 
     public static int[][][] extraire_ieme_carte(int[][] cards, int index) {
         int[] element = cards[index];
@@ -63,36 +41,11 @@ public class Shuffle {
         return finalResult;
     }
 
-/*
-    public static List<int[]> tirer_une_carte(List<int[]> lst) {
-        Random random = new Random();
-        int randomIndex = random.nextInt(lst.size());
-        return extraire_ieme_carte(lst, randomIndex);
-    }*/
-
     public static int[][][] tirer_une_carte(int[][] cards) {
         Random random = new Random();
         int randomIndex = random.nextInt(cards.length);
         return extraire_ieme_carte(cards, randomIndex);
     }
-
-
-
-
-
-    /*
-
-    public static List<int[]> melanger_jeu_cartes(List<int[]> lst) {
-        if (lst.size() <= 1) {
-            return lst;
-        } else {
-            List<int[]> result =  tirer_une_carte(lst);
-            List<int[]> finalResult = new ArrayList<>();
-            finalResult.add(result.get(0));
-            finalResult.addAll(melanger_jeu_cartes(result.subList(1, result.size())));
-            return finalResult;
-        }
-    } */
 
     public static int[][] melanger_jeu_cartes(int[][] cards) {
         if (cards.length == 1) return new int[][] { cards[0] };
@@ -105,39 +58,43 @@ public class Shuffle {
 
     public static int[][] concatArrays(int[][] a, int[][] b) {
         int[][] result = new int[a.length + b.length][];
-        System.arraycopy(a, 0, result, 0, a.length);
-        System.arraycopy(b, 0, result, a.length, b.length);
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[a.length + i] = b[i];
+        }
         return result;
     }
 
-
-
-    /*
-
-    public static List<List<int[]>> piocher_n_cartes(List<int[]> lst) {
-        List<List<int[]>> result = new ArrayList<>();
-
+    public static int[][][] piocher_n_cartes(int[][] cards) {
         Random random = new Random();
-        int index = random.nextInt(9) + 21;
+        int randomIndex = random.nextInt(9) + 21; // Generate a random index between 21 and 29 (inclusive)
 
-        List<int[]> cartes_piochees = new ArrayList<>(lst.subList(0, index));
-        List<int[]> cartes_restantes = new ArrayList<>(lst.subList(index, lst.size()));
+        int[][] cartes_piochees = new int[randomIndex + 1][];
+        int[][] cartes_restantes = new int[cards.length - (randomIndex + 1)][];
 
-        result.add(cartes_piochees);
-        result.add(cartes_restantes);
+        // Fill the 'cartes_piochees' array
+        for (int i = 0; i <= randomIndex; i++) {
+            cartes_piochees[i] = cards[i];
+        }
+
+        // Fill the 'cartes_restantes' array
+        for (int i = randomIndex + 1; i < cards.length; i++) {
+            cartes_restantes[i - (randomIndex + 1)] = cards[i];
+        }
+
+        int[][][] result = new int[2][][];
+        result[0] = cartes_piochees;
+        result[1] = cartes_restantes;
 
         return result;
     }
 
-    public static List<List<int[]>> defausser_cartes(List<int[]> cartes_piochees, List<int[]> cartes_restantes) {
-        List<int[]> combinedList = new ArrayList<>(cartes_piochees);
-        combinedList.addAll(cartes_restantes);
-
-        //return combinedList;
-        return piocher_n_cartes(melanger_jeu_cartes(combinedList));
+    public static int[][][] deffausser_cartes(int[][] card1, int[][] card2) {
+        int[][] combinedCards = concatArrays(card1, card2);
+        return piocher_n_cartes(melanger_jeu_cartes(combinedCards));
     }
-
- */
 }
 
 

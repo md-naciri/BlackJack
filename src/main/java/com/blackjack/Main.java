@@ -35,11 +35,36 @@ public class Main {
 
         int[][] cards = Shuffle.sortedCards();
 
-        //int indexToExtract = 2;
+        int[][][] result = Shuffle.piocher_n_cartes(Shuffle.melanger_jeu_cartes(cards));
+        int[][] cartes_piochees = result[0];
+        int[][] cartes_restantes = result[1];
 
-        //int[][][] finalResult = Shuffle.extraire_ieme_carte(cards, indexToExtract);
+        System.out.println("Cartes piochées:");
+        for (int[] card : cartes_piochees) {
+            System.out.println(Arrays.toString(card));
+        }
 
-        int[][][] finalResult = Shuffle.tirer_une_carte(cards);
+        System.out.println("Cartes restantes:");
+        for (int[] card : cartes_restantes) {
+            System.out.println(Arrays.toString(card));
+        }
+
+        int[][][] defauss = Shuffle.deffausser_cartes(cartes_piochees, cartes_restantes);
+        int[][] cartes_piochees1 = defauss[0];
+        int[][] cartes_restantes1 = defauss[1];
+        System.out.println("\nMn ba3d defauss:\n");
+        System.out.println("Cartes piochées:");
+        for (int[] card : cartes_piochees1) {
+            System.out.println(Arrays.toString(card));
+        }
+        System.out.println("Cartes restantes:");
+        for (int[] card : cartes_restantes1) {
+            System.out.println(Arrays.toString(card));
+        }
+
+
+
+        /*int[][][] finalResult = Shuffle.tirer_une_carte(cards);
 
         int[] extractedElement = finalResult[0][0];
         System.out.println("Extracted Element: Rank: " + extractedElement[0] + ", Suit: " + extractedElement[1]);
@@ -61,68 +86,10 @@ public class Main {
             int suitIndex = sh_cards[i][1] - 1;
             String suit = suits[suitIndex];
             System.out.println("[" + symbolize(card[0]) + suit + "] ");
-        }
+        }*/
 
 
 
-
-
-
-
-
-
-        //Shuffle.sortedCards().forEach(e-> System.out.println(e[0] + " " + e[1]));
-        //List<int[]> r = Shuffle.tirer_une_carte(Shuffle.sortedCards());
-        //r.forEach(e-> System.out.println(e[0] + " " + e[1]));
-        //for (int[] array : r) {
-        //    System.out.println(Arrays.toString(array));
-        //}
-        //List<int[]> r1 = Shuffle.extraire_ieme_carte(Shuffle.sortedCards(), 3);
-
-
-
-
-
-/*
-        List<int[]> cards = Shuffle.sortedCards();
-        List<int[]> shuffledCards = Shuffle.melanger_jeu_cartes(cards);
-        for (int[] array : shuffledCards) {
-            System.out.println(Arrays.toString(array));
-        }
-
-*/
-/*
-
-        List<List<int[]>> result = Shuffle.piocher_n_cartes(Shuffle.melanger_jeu_cartes(Shuffle.sortedCards()));
-        List<int[]> cartes_piochees = result.get(0);
-        List<int[]> cartes_restantes = result.get(1);
-        System.out.println("\nCartes piochées:");
-        for (int[] card : cartes_piochees) {
-            System.out.println(Arrays.toString(card));
-        }
-        System.out.println("\nCartes restantes:");
-        for (int[] card : cartes_restantes) {
-            System.out.println(Arrays.toString(card));
-        }
-
-
-
-        List<List<int[]>> d = Shuffle.defausser_cartes(cartes_piochees ,cartes_restantes);
-        System.out.println("\nNew list:");
-        List<int[]> cartes_piochees2 = d.get(0);
-        List<int[]> cartes_restantes2 = d.get(1);
-        System.out.println("Cartes piochées:");
-        for (int[] card : cartes_piochees2) {
-            System.out.println(Arrays.toString(card));
-        }
-        System.out.println("\nCartes restantes:");
-        for (int[] card : cartes_restantes2) {
-            System.out.println(Arrays.toString(card));
-        }
-
-
-        Game start = new Game();
-        start.start();*/
 
     }
 }
