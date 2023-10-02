@@ -18,7 +18,6 @@ public class Main {
         }
     }
     public static void main(String[] args) {
-        System.out.printf("Hello and welcome!\n");
         String[] suits = {"♦", "♥", "♠", "♣"};
         /*for (int[] card : Shuffle.sortedCards()) {
             int value = card[0];
@@ -31,8 +30,17 @@ public class Main {
             System.out.println(" |    " + symbolize(value) + "|");
             System.out.println("  ¯¯¯¯¯");
         }*/
+        String message = "test";
+        System.out.println("\u001B[30m" + message + "\u001B[0m");  // Black
+        System.out.println("\u001B[31m" + message + "\u001B[0m");  // Red
+        System.out.println("\u001B[32m" + message + "\u001B[0m");  // Green
+        System.out.println("\u001B[33m" + message + "\u001B[0m");  // Yellow
+        System.out.println("\u001B[34m" + message + "\u001B[0m");  // Blue
+        System.out.println("\u001B[35m" + message + "\u001B[0m");  // Magenta
+        System.out.println("\u001B[36m" + message + "\u001B[0m");  // Cyan
+        System.out.println("\u001B[37m" + message + "\u001B[0m");  // White
 
-
+        /*
         int[][] cards = Shuffle.sortedCards();
 
         int[][][] result = Shuffle.piocher_n_cartes(Shuffle.melanger_jeu_cartes(cards));
@@ -61,7 +69,7 @@ public class Main {
         for (int[] card : cartes_restantes1) {
             System.out.println(Arrays.toString(card));
         }
-
+        */
 
 
         /*int[][][] finalResult = Shuffle.tirer_une_carte(cards);
@@ -88,6 +96,9 @@ public class Main {
             System.out.println("[" + symbolize(card[0]) + suit + "] ");
         }*/
 
+
+
+        Game.start();
 
 
 

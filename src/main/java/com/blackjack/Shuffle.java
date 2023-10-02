@@ -91,8 +91,9 @@ public class Shuffle {
         return result;
     }
 
-    public static int[][][] deffausser_cartes(int[][] card1, int[][] card2) {
+    public static int[][][] deffausser_cartes(int[][] card1, int[][] card2, int[][] card3) {
         int[][] combinedCards = concatArrays(card1, card2);
+        combinedCards = concatArrays(combinedCards, card3);
         return piocher_n_cartes(melanger_jeu_cartes(combinedCards));
     }
 }
