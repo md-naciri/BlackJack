@@ -1,55 +1,52 @@
 package com.blackjack;
+import java.util.Arrays;
 import java.util.Scanner;
+
 
 
 public class Game {
 
-    public static void start() {
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_BRIGHT_GREEN = "\u001B[92m";
+
+    private static final String ANSI_YELLOW = "\u001B[33m";
+    private static final String ANSI_RED = "\u001B[91m";
+    private static final String ANSI_RESET = "\u001B[0m";
+
+    private int[][] cartes_piochees;
+    private int[][] cartes_restantes;
+    private int[][] roomCards;
+    private int sold;
+
+    public Game(int initialMoney) {
+        int[][] cards = Shuffle.melanger_jeu_cartes(Shuffle.sortedCards());
+        this.cartes_piochees = Shuffle.piocher_n_cartes(cards)[0];
+        this.cartes_restantes = Shuffle.piocher_n_cartes(cards)[1];
+        this.roomCards = new int[0][];
+        this.sold = initialMoney;
+    }
+
+    public void start() {
         Scanner scanner = new Scanner(System.in);
-
         boolean playAgain = true;
-        int[][] sortedCards = Shuffle.sortedCards();
-        int[][] cards = Shuffle.melanger_jeu_cartes(sortedCards);
-        int[][][] pioch = Shuffle.piocher_n_cartes(cards);
-        int[][] cartes_piochees = pioch[0];
-        int[][] cartes_restantes = pioch[1];
-        int[][] roomCards = new int[0][];
-        int dealerScore = 0;
-        int playerScore = 0;
+        boolean check = true;
 
-        boolean check = false;
+        System.out.println("\nWelcome to Blackjack!");
+        System.out.println("\nYour have: " + sold + "\uD83D\uDCB2");
 
         while (playAgain) {
-            if(!check){
-                System.out.println("\nWelcome to Blackjack!");
-                System.out.println("1. Start Game");
-                System.out.println("2. Rules");
-                System.out.println("3. Quit");
-                System.out.print("Enter your choice: ");
-            }
-            else {
-                System.out.println("1. Continue");
-                System.out.println("2. Rules");
-                System.out.println("3. Quit");
-                System.out.print("Enter your choice: ");
-            }
-
+            if (check) GameMessages.displayMenu1();
+            else GameMessages.displayMenu2();
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline character
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
-                    check = true;
-                    int bet = bet();
-                    int[][][] playGame = playGame(cartes_piochees, cartes_restantes, roomCards, dealerScore, playerScore);
-                    cartes_piochees = playGame[0];
-                    cartes_restantes = playGame[1];
-                    dealerScore = playGame[2][0][0];
-                    playerScore = playGame[3][0][0];
-                    roomCards = playGame[4];
+                    check = false;
+                    playRound();
                     break;
                 case 2:
-                    displayRules();
+                    GameMessages.displayRules();
                     break;
                 case 3:
                     playAgain = false;
@@ -61,30 +58,53 @@ public class Game {
         }
     }
 
+    private void playRound() {
+        int bet = getBet();
+        int[][][] playGame = playGame(cartes_piochees, cartes_restantes, roomCards, sold, bet);
+        cartes_piochees = playGame[0];
+        cartes_restantes = playGame[1];
+        sold = playGame[2][0][0];
+        roomCards = playGame[3];
+    }
 
 
-    public static int[][][] playGame(int[][] cartes_piochees, int[][] cartes_restantes, int[][] roomCards, int dealerScore, int playerScore) {
+
+    private int getBet() {
+        Scanner scanner = new Scanner(System.in);
+        int bet;
+        while (true) {
+            System.out.print("Place a bet: ");
+            bet = scanner.nextInt();
+            if (bet >= 1 && bet <= sold) {
+                break;
+            } else {
+                System.out.println("Invalid bet. Please place a bet between 1 and " + sold + ".");
+            }
+        }
+        return bet;
+    }
+
+
+
+    public static int[][][] playGame(int[][] cartes_piochees, int[][] cartes_restantes, int[][] roomCards, int sold, int bet) {
+
 
         if(cartes_piochees.length<4){
             int[][][] pioch = Shuffle.deffausser_cartes(cartes_piochees, cartes_restantes, roomCards);
             cartes_piochees = pioch[0];
             cartes_restantes = pioch[1];
             roomCards = new int[0][];
-            displayShuffleMessage();
+            GameMessages.displayShuffleMessage();
         }
-        Scanner scanner = new Scanner(System.in);
 
         int[][] dealerHand = new int[0][];
         int[][] playerHand = new int[0][];
-
-
-
-        /*System.out.println(Arrays.deepToString(cartes_piochees));
-        System.out.println(Arrays.deepToString(cartes_restantes));
-        System.out.println(Arrays.deepToString(roomCards));*/
-
-
         int[][][] handHelper;
+
+        System.out.println(Arrays.deepToString(cartes_piochees));
+        System.out.println(Arrays.deepToString(cartes_restantes));
+        System.out.println(Arrays.deepToString(roomCards));
+
 
         for (int i = 0; i < 2; i++) {
             handHelper = hit(cartes_piochees, playerHand);
@@ -97,32 +117,22 @@ public class Game {
         }
 
         System.out.println("\nDealer Hand\n");
-        displayUpsideCard();
-        displayOneCardDrawing(dealerHand[1], "\u001B[33m");
+        CardDesign.displayUpsideCard(ANSI_YELLOW);
+        CardDesign.displayOneCardDrawing(dealerHand[1], ANSI_YELLOW);
 
         System.out.println("\nPlayer Hand:\n");
-        displayCardDrawing(playerHand, "\u001B[32m");
+        CardDesign.displayCardDrawing(playerHand, ANSI_GREEN);
         System.out.println("score: "+score(playerHand));
 
         while (score(playerHand)<=21){
             boolean check = false;
             boolean shuffle = false;
             String choice;
-            if (score(playerHand)==21){
-                choice = "2";
-            }else {
-                System.out.println("\n1. Hit");
-                System.out.println("2. Stand");
-                System.out.println("3. Quit");
-                System.out.print("Enter your choice: ");
-                choice = scanner.next();
-                scanner.nextLine(); // Consume the newline character
-            }
+            choice = score(playerHand)==21 ? "2" : HitStandChoice();
             switch (choice) {
                 case "1":
                     if(cartes_piochees.length<1){
                         System.out.println("No card left");
-                        //displayShuffleMessage();
                         shuffle = true;
                         break;
                     }
@@ -130,12 +140,12 @@ public class Game {
                     playerHand = handHelper[0];
                     cartes_piochees = handHelper[1];
                     System.out.println("\nPlayer Hand:\n");
-                    displayCardDrawing(playerHand, "\u001B[32m");
+                    CardDesign.displayCardDrawing(playerHand, ANSI_GREEN);
                     System.out.println("score: "+score(playerHand));
                     break;
                 case "2":
                     if(cartes_piochees.length<1){
-                        displayShuffleMessage();
+                        System.out.println("No card left");
                         shuffle = true;
                         break;
                     }
@@ -159,47 +169,38 @@ public class Game {
 
         }
 
+        int scorePlayer = score(playerHand);
+        int scoreDealer = score(dealerHand);
+
         System.out.println("\n-----------Round Info:-----------");
         System.out.println("\nDealer Hand\n");
-        displayCardDrawing(dealerHand, "\u001B[33m");
-        System.out.println("score: "+score(dealerHand));
-
+        CardDesign.displayCardDrawing(dealerHand, ANSI_YELLOW);
+        System.out.println("score: "+scoreDealer);
 
         System.out.println("\nPlayer Hand:\n");
-        displayCardDrawing(playerHand, "\u001B[32m");
-        System.out.println("score: "+score(playerHand));
+        CardDesign.displayCardDrawing(playerHand, ANSI_GREEN);
+        System.out.println("score: "+scorePlayer);
 
-        if (score(playerHand)>21){
-            System.out.println("\nYou Lose\n");
-            dealerScore++;
-        }
-        else if (score(dealerHand)>21) {
-            System.out.println("\nYou Win\n");
-            playerScore++;
-        }
-        else if (score(playerHand) < score(dealerHand)) {
-            System.out.println("\nYou Lose\n");
-            dealerScore++;
-        }
-        else if (score(playerHand) > score(dealerHand)) {
-            System.out.println("\nYou Win\n");
-            playerScore++;
-        }
-        else System.out.println("\nIt's a draw\n");
+        sold = determineGameResult(scorePlayer, scoreDealer, bet, sold);
+        System.out.println("Your sold: "+sold);
 
-        roomCards = Shuffle.concatArrays(roomCards, dealerHand);
-        roomCards = Shuffle.concatArrays(roomCards, playerHand);
-        System.out.println("Your total score: "+playerScore);
-        System.out.println(("Dealer total score: "+dealerScore));
+        if (sold<=0){
+            System.out.println(ANSI_RED+"\nYou lose your money"+ANSI_RESET);
+            GameMessages.charByCharDisplay(new String[]{"L","O","O","O","O","O","O","O","O","O","S","E","R"});
+            System.exit(0);
+        }
 
-        int[][][] result = new int[5][][];
-        result[0] = cartes_piochees;
-        result[1] = cartes_restantes;
-        result[2] = new int[][]{new int[]{dealerScore}};
-        result[3] = new int[][]{new int[]{playerScore}};
-        result[4] = roomCards;
-        return result;
+        roomCards = Shuffle.concatArrays(playerHand, dealerHand);
+
+        return new int[][][]{cartes_piochees, cartes_restantes, new int[][]{new int[]{sold}}, roomCards};
     }
+
+    private static String HitStandChoice() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\n1. Hit\n2. Stand\n3. Quit\nEnter your choice: ");
+        return scanner.next();
+    }
+
 
     public static int[][][] hit(int[][] cartes_piochees, int[][] hand) {
         int[][][] handHelper = Shuffle.extraire_ieme_carte(cartes_piochees, 0);
@@ -250,126 +251,26 @@ public class Game {
         }
         return score;
     }
-    public static void displayRules() {
-        System.out.println("\nSeriously, all pumped up for Blackjack but zero clue about the rules?\n" +
-                "Fear not! A little Google search will transform you from a lost soul to a Blackjack maestro.\n" +
-                "Get ready to conquer the tables, man! \uD83C\uDFB2\n");
-    }
+    public static int determineGameResult(int scorePlayer, int scoreDealer, int bet, int sold){
 
-    public static void displayShuffleMessage() {
-        System.out.println("\nThere are no left cards, the dealer is shuffling the cards");
-        String[] count = {"B","e"," ","p","a","t","i","e","n","t"," ",".",".","."};
-        for (int i = 0; i < count.length ; i++) {
-            System.out.print(count[i]);
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if (scorePlayer>21){
+            System.out.println(ANSI_RED+"\nYou Lose\n"+ANSI_RESET);
+            sold-=bet;
         }
-    }
-
-    public static String symbolize(int value) {
-        if (value == 1) {
-            return "A";
-        } else if (value == 11) {
-            return "J";
-        } else if (value == 12) {
-            return "Q";
-        } else if (value == 13) {
-            return "K";
-        } else {
-            return String.valueOf(value);
+        else if (scoreDealer>21) {
+            System.out.println(ANSI_BRIGHT_GREEN+"\nYou Win\n"+ANSI_RESET);
+            sold+=bet;
         }
-    }
-
-    public static void displayUpsideCard() {
-        System.out.println("\u001B[33m"+"  _____");
-        System.out.println(" |     |");
-        System.out.println(" | ^_^ |");
-        System.out.println(" |     |");
-        System.out.println("  ¯¯¯¯¯"+"\u001B[0m");
-    }
-
-    public static void displayCardDrawing(int[][] cards, String color) {
-        String[] suits = {"♦", "♥", "♠", "♣"};
-        String line1 = "";
-        String line2 = "";
-        String line3 = "";
-        String line4 = "";
-        String line5 = "";
-
-        for (int[] card : cards) {
-            int value = card[0];
-            int suitIndex = card[1] - 1; // Subtract 1 to map to the suits array
-            String suit = suits[suitIndex];
-            //System.out.print("[" + symbolize(value) + suit + "] ");
-            if (value == 10) {
-                System.out.println(color+"  _____");
-                System.out.println(" |" + symbolize(value) + "   |");
-                System.out.println(" |  " + suit + "  |");
-                System.out.println(" |   " + symbolize(value) + "|");
-                System.out.println("  ¯¯¯¯¯"+"\u001B[0m");
-            }
-            else {
-                System.out.println(color+"  _____");
-                System.out.println(" |" + symbolize(value) + "    |");
-                System.out.println(" |  " + suit + "  |");
-                System.out.println(" |    " + symbolize(value) + "|");
-                System.out.println("  ¯¯¯¯¯"+"\u001B[0m");
-            }
+        else if (scorePlayer < scoreDealer) {
+            System.out.println(ANSI_RED+"\nYou Lose\n"+ANSI_RESET);
+            sold-=bet;
         }
-        /*for (int[] card : cards) {
-            int value = card[0];
-            int suitIndex = card[1] - 1; // Subtract 1 to map to the suits array
-            String suit = suits[suitIndex];
-            //System.out.print("[" + symbolize(value) + suit + "] ");
-            if (value == 10) {
-                line1+= "  "+"  _____";
-                line2+= "  "+" |" + symbolize(value) + "   |";
-                line3+= "  "+" |  " + suit + "  |";
-                line4+= "  "+" |   " + symbolize(value) + "|";
-                line5+= "  "+"  ¯¯¯¯¯";
-            }
-            else {
-                line1+= "  "+"  _____";
-                line2+= "  "+" |" + symbolize(value) + "    |";
-                line3+= "  "+" |  " + suit + "  |";
-                line4+= "  "+" |    " + symbolize(value) + "|";
-                line5+= "  "+"  ¯¯¯¯¯";
-            }
+        else if (scorePlayer > scoreDealer) {
+            System.out.println(ANSI_BRIGHT_GREEN+"\nYou Win\n"+ANSI_RESET);
+            sold+=bet;
         }
-        String toPrint = line1+"\n"+line2+"\n"+line3+"\n"+line4+"\n"+line5;
-        System.out.println(toPrint);*/
-    }
+        else System.out.println("\nIt's a draw\n");
 
-    public static void displayOneCardDrawing(int[] card,String color){
-
-        String[] suits = {"♦", "♥", "♠", "♣"};
-        int value = card[0];
-        int suitIndex = card[1] - 1; // Subtract 1 to map to the suits array
-        String suit = suits[suitIndex];
-        //System.out.print("[" + symbolize(value) + suit + "] ");
-        if (value == 10) {
-            System.out.println(color+"  _____");
-            System.out.println(" |" + symbolize(value) + "   |");
-            System.out.println(" |  " + suit + "  |");
-            System.out.println(" |   " + symbolize(value) + "|");
-            System.out.println("  ¯¯¯¯¯"+"\u001B[0m");
-        }
-        else {
-            System.out.println(color+"  _____");
-            System.out.println(" |" + symbolize(value) + "    |");
-            System.out.println(" |  " + suit + "  |");
-            System.out.println(" |    " + symbolize(value) + "|");
-            System.out.println("  ¯¯¯¯¯"+"\u001B[0m");
-        }
-    }
-
-    public static int bet() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("place a bet: ");
-        int bet = scanner.nextInt();
-        return bet;
+        return sold;
     }
 }
