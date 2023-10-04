@@ -4,9 +4,10 @@ import java.util.Random;
 public class Shuffle {
 
     public static int[][] sortedCards() {
-        int rank = 1;
-        int suit = 1;
-        int totalCards = 4 * 13;
+        int rank = 4;
+        int suit = 4;
+        int totalCards = (13*(5-suit))-rank+1;
+
         int[][] cards = new int[totalCards][2];
         int index = 0;
 
@@ -53,16 +54,29 @@ public class Shuffle {
         int[][][] drawnCard = tirer_une_carte(cards);
         int[][] shuffledCards = melanger_jeu_cartes(drawnCard[1]);
 
-        return concatArrays(new int[][] { drawnCard[0][0] }, shuffledCards);
+        return concatTwoArrays(new int[][] { drawnCard[0][0] }, shuffledCards);
     }
 
-    public static int[][] concatArrays(int[][] a, int[][] b) {
+    public static int[][] concatTwoArrays(int[][] a, int[][] b) {
         int[][] result = new int[a.length + b.length][];
         for (int i = 0; i < a.length; i++) {
             result[i] = a[i];
         }
         for (int i = 0; i < b.length; i++) {
             result[a.length + i] = b[i];
+        }
+        return result;
+    }
+    public static int[][] concatThreeArrays(int[][] a, int[][] b, int[][] c) {
+        int[][] result = new int[a.length + b.length + c.length][];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[a.length + i] = b[i];
+        }
+        for (int i = 0; i < c.length; i++) {
+            result[a.length + b.length + i] = c[i];
         }
         return result;
     }
@@ -92,8 +106,8 @@ public class Shuffle {
     }
 
     public static int[][][] deffausser_cartes(int[][] card1, int[][] card2, int[][] card3) {
-        int[][] combinedCards = concatArrays(card1, card2);
-        combinedCards = concatArrays(combinedCards, card3);
+        int[][] combinedCards = concatTwoArrays(card1, card2);
+        combinedCards = concatTwoArrays(combinedCards, card3);
         return piocher_n_cartes(melanger_jeu_cartes(combinedCards));
     }
 }

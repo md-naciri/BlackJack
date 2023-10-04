@@ -1,9 +1,12 @@
 package com.blackjack;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
 
+        System.out.println(Arrays.deepToString(Shuffle.sortedCards()));
         /*String message = "test";
         System.out.println("\u001B[30m" + message + "\u001B[0m");  // Black
         System.out.println("\u001B[31m" + message + "\u001B[0m");  // Red
@@ -22,21 +25,31 @@ public class Main {
         System.out.println("\u001B[96m" + message + "\u001B[0m");  // Bright Cyan
         System.out.println("\u001B[97m" + message + "\u001B[0m");  // Bright White*/
 
-
         System.out.println("\n" +
                 "█░█░█ █▀▀ █░░ █▀▀ █▀█ █▀▄▀█ █▀▀   ▀█▀ █▀█   ▄▀█ █▄░█ ▄▀█ █▀ █▀   █▀▀ █░█ █▀▀ █▄▀ █ █▄░█ █▀▀   █▀▀ ▄▀█ █▀ █ █▄░█ █▀█\n" +
                 "▀▄▀▄▀ ██▄ █▄▄ █▄▄ █▄█ █░▀░█ ██▄   ░█░ █▄█   █▀█ █░▀█ █▀█ ▄█ ▄█   █▀░ █▄█ █▄▄ █░█ █ █░▀█ █▄█   █▄▄ █▀█ ▄█ █ █░▀█ █▄█");
 
-
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter the total money you want to play with: ");
-        int initialMoney = scanner.nextInt();
+        boolean isValidInput = false;
+        int initialMoney = 0;
+        System.out.print("Enter the total money (USD) you want to play with: \n");
+        while (!isValidInput) {
+            String input = scanner.nextLine();
+
+            try {
+                initialMoney = Integer.parseInt(input);
+                if (initialMoney >= 1000) {
+                    isValidInput = true;
+                } else {
+                    System.out.println("You can't bet less than $1000 a lfa9ir: ");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid amount of money (USD): ");
+            }
+        }
 
         Game game = new Game(initialMoney);
         game.start();
-
-
-
     }
 }

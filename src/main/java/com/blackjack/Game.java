@@ -8,10 +8,10 @@ public class Game {
 
     private static final String ANSI_GREEN = "\u001B[32m";
     private static final String ANSI_BRIGHT_GREEN = "\u001B[92m";
-
     private static final String ANSI_YELLOW = "\u001B[33m";
     private static final String ANSI_RED = "\u001B[91m";
     private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_WHITE = "\u001B[97m";
 
     private int[][] cartes_piochees;
     private int[][] cartes_restantes;
@@ -37,18 +37,18 @@ public class Game {
         while (playAgain) {
             if (check) GameMessages.displayMenu1();
             else GameMessages.displayMenu2();
-            int choice = scanner.nextInt();
+            String choice = scanner.next();
             scanner.nextLine();
 
             switch (choice) {
-                case 1:
+                case "1":
                     check = false;
                     playRound();
                     break;
-                case 2:
+                case "2":
                     GameMessages.displayRules();
                     break;
-                case 3:
+                case "3":
                     playAgain = false;
                     break;
                 default:
@@ -69,19 +69,27 @@ public class Game {
 
 
 
-    private int getBet() {
+    public int getBet() {
         Scanner scanner = new Scanner(System.in);
-        int bet;
-        while (true) {
-            System.out.print("Place a bet: ");
-            bet = scanner.nextInt();
-            if (bet >= 1 && bet <= sold) {
-                break;
-            } else {
-                System.out.println("Invalid bet. Please place a bet between 1 and " + sold + ".");
+        Boolean check = true;
+        String bet = "";
+        int intBet = 0;
+        System.out.print("Place a bet: ");
+        while (check) {
+            bet = scanner.next();
+            try {
+                intBet = Integer.parseInt(bet);
+                if ( intBet >= 1 && intBet <= sold) {
+                    check = false;
+                } else {
+                    System.out.println("Invalid bet. Please place a bet between $1 and $" + sold +":");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid bet format! Please enter a valid bet:");
             }
+
         }
-        return bet;
+        return intBet;
     }
 
 
@@ -101,6 +109,7 @@ public class Game {
         int[][] playerHand = new int[0][];
         int[][][] handHelper;
 
+        System.out.println("\n");
         System.out.println(Arrays.deepToString(cartes_piochees));
         System.out.println(Arrays.deepToString(cartes_restantes));
         System.out.println(Arrays.deepToString(roomCards));
@@ -182,7 +191,7 @@ public class Game {
         System.out.println("score: "+scorePlayer);
 
         sold = determineGameResult(scorePlayer, scoreDealer, bet, sold);
-        System.out.println("Your sold: "+sold);
+        System.out.println(ANSI_WHITE+"Your sold: "+sold+ANSI_RESET+"\n");
 
         if (sold<=0){
             System.out.println(ANSI_RED+"\nYou lose your money"+ANSI_RESET);
@@ -190,7 +199,7 @@ public class Game {
             System.exit(0);
         }
 
-        roomCards = Shuffle.concatArrays(playerHand, dealerHand);
+        roomCards = Shuffle.concatThreeArrays(playerHand, dealerHand, roomCards);
 
         return new int[][][]{cartes_piochees, cartes_restantes, new int[][]{new int[]{sold}}, roomCards};
     }
@@ -254,22 +263,22 @@ public class Game {
     public static int determineGameResult(int scorePlayer, int scoreDealer, int bet, int sold){
 
         if (scorePlayer>21){
-            System.out.println(ANSI_RED+"\nYou Lose\n"+ANSI_RESET);
+            System.out.println(ANSI_RED+"\nYou Lose"+ANSI_RESET);
             sold-=bet;
         }
         else if (scoreDealer>21) {
-            System.out.println(ANSI_BRIGHT_GREEN+"\nYou Win\n"+ANSI_RESET);
+            System.out.println(ANSI_BRIGHT_GREEN+"\nYou Win"+ANSI_RESET);
             sold+=bet;
         }
         else if (scorePlayer < scoreDealer) {
-            System.out.println(ANSI_RED+"\nYou Lose\n"+ANSI_RESET);
+            System.out.println(ANSI_RED+"\nYou Lose"+ANSI_RESET);
             sold-=bet;
         }
         else if (scorePlayer > scoreDealer) {
-            System.out.println(ANSI_BRIGHT_GREEN+"\nYou Win\n"+ANSI_RESET);
+            System.out.println(ANSI_BRIGHT_GREEN+"\nYou Win"+ANSI_RESET);
             sold+=bet;
         }
-        else System.out.println("\nIt's a draw\n");
+        else System.out.println("\nIt's a draw");
 
         return sold;
     }
